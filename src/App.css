@@ -1,0 +1,143 @@
+/* App.css — コンポーネントスタイル（学習サイト・章→モジュール導線）
+   構造はタイポグラフィ・罫線・リストで出し、均一カードグリッドや装飾アイコンに頼らない。 */
+
+.app { display: flex; flex-direction: column; min-height: 100vh; }
+.main { flex: 1; width: 100%; }
+
+/* ── ヘッダ ── */
+.site-header { position: sticky; top: 0; z-index: 20; background: rgba(246, 247, 245, 0.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+.header-inner { max-width: 980px; margin: 0 auto; padding: 0.7rem 1.2rem; display: flex; align-items: center; gap: 1rem; }
+.brand { font-weight: 700; font-size: 1.04rem; color: var(--ink); letter-spacing: 0.01em; white-space: nowrap; }
+.brand:hover { text-decoration: none; color: var(--accent); }
+.site-nav { display: flex; gap: 1.2rem; margin-left: auto; }
+.site-nav a { color: var(--ink-soft); font-size: 0.92rem; font-weight: 600; padding: 0.2rem 0; border-bottom: 2px solid transparent; }
+.site-nav a:hover { color: var(--accent); text-decoration: none; }
+.site-nav a.active { color: var(--accent); border-bottom-color: var(--accent); }
+.menu-toggle { display: none; margin-left: auto; background: none; border: 0; cursor: pointer; flex-direction: column; gap: 4px; padding: 6px; }
+.menu-toggle span { display: block; width: 22px; height: 2px; background: var(--ink); }
+.mobile-chapters { border-top: 1px solid var(--line); padding: 0.6rem 1.2rem 1rem; max-width: 980px; margin: 0 auto; }
+.mobile-chapters details { border-bottom: 1px solid var(--line); }
+.mobile-chapters summary { padding: 0.6rem 0; font-weight: 600; cursor: pointer; font-size: 0.92rem; }
+.mobile-chapters ul { list-style: none; margin: 0 0 0.6rem; padding: 0 0 0 1rem; }
+.mobile-chapters li { padding: 0.3rem 0; }
+.mobile-chapters a { font-size: 0.9rem; }
+
+.home, .module, .glossary, .guide, .about, .privacy { max-width: var(--maxw); margin: 0 auto; padding: 2.4rem 1.2rem 4rem; }
+
+/* ── ホーム ── */
+.hero { padding: 1.5rem 0 2.4rem; border-bottom: 1px solid var(--line); margin-bottom: 2.2rem; }
+.hero-eyebrow { color: var(--accent); font-weight: 700; font-size: 0.82rem; letter-spacing: 0.08em; margin: 0 0 0.6rem; }
+.hero h1 { font-family: var(--serif); font-size: 1.8rem; line-height: 1.5; margin: 0 0 1rem; }
+.hero-lead { color: var(--ink-soft); font-size: 1.02rem; margin: 0 0 1.6rem; }
+.hero-actions { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+.chapter-block { margin-bottom: 2.4rem; }
+.chapter-head { display: flex; align-items: baseline; gap: 0.8rem; border-bottom: 2px solid var(--ink); padding-bottom: 0.4rem; margin-bottom: 1rem; }
+.chapter-num { color: var(--accent); font-weight: 700; font-size: 0.86rem; letter-spacing: 0.04em; white-space: nowrap; }
+.chapter-head h2 { font-size: 1.2rem; margin: 0; }
+.module-list { list-style: none; margin: 0; padding: 0; counter-reset: mod; }
+.module-list > li { counter-increment: mod; border-bottom: 1px solid var(--line); }
+.module-list > li > a { display: grid; grid-template-columns: 2.2rem 1fr; gap: 0.2rem 0.6rem; align-items: baseline; padding: 0.85rem 0.4rem; color: var(--ink); }
+.module-list > li > a:hover { background: var(--paper-2); text-decoration: none; }
+.module-list > li > a::before { content: counter(mod, decimal-leading-zero); grid-row: 1 / span 2; color: var(--ink-faint); font-size: 0.9rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.module-title { font-weight: 700; font-size: 1.02rem; }
+.module-desc { grid-column: 2; color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6; }
+.module-progress { grid-column: 2; color: var(--tip); font-size: 0.78rem; font-weight: 600; }
+
+/* ── モジュール ── */
+.breadcrumb { font-size: 0.82rem; color: var(--ink-faint); display: flex; gap: 0.5rem; margin-bottom: 1.2rem; flex-wrap: wrap; }
+.breadcrumb a { color: var(--ink-soft); }
+.module-header { border-bottom: 1px solid var(--line); padding-bottom: 1.2rem; margin-bottom: 1.6rem; }
+.module-chapter { color: var(--accent); font-weight: 700; font-size: 0.8rem; letter-spacing: 0.05em; margin: 0 0 0.5rem; }
+.module-header h1 { font-family: var(--serif); font-size: 1.7rem; margin: 0 0 0.7rem; line-height: 1.45; }
+.module-lead { color: var(--ink-soft); font-size: 1rem; margin: 0; }
+.module-body { font-size: 1.02rem; }
+.module-body h2 { font-size: 1.3rem; margin: 2.2rem 0 0.9rem; padding-left: 0.7rem; border-left: 4px solid var(--accent); }
+.module-body h3 { font-size: 1.08rem; margin: 1.6rem 0 0.6rem; }
+.module-body p { margin: 0.9rem 0; }
+.module-body ul, .module-body ol { margin: 0.9rem 0; padding-left: 1.4rem; }
+.module-body li { margin: 0.4rem 0; }
+.module-body strong { color: var(--accent-deep); font-weight: 700; }
+
+.term-link { color: var(--accent); border-bottom: 1px dotted var(--accent); font-weight: 600; }
+.term-link:hover { text-decoration: none; background: var(--accent-tint); }
+.term-plain { font-weight: 600; }
+
+/* ── コールアウト ── */
+.callout { border-radius: var(--radius); padding: 0.9rem 1.1rem; margin: 1.3rem 0; border-left: 4px solid var(--ink-faint); background: var(--paper-2); }
+.callout p { margin: 0; }
+.callout-label { display: inline-block; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.06em; margin-bottom: 0.35rem; }
+.callout-tip { border-left-color: var(--tip); background: var(--tip-bg); } .callout-tip .callout-label { color: var(--tip); }
+.callout-exam { border-left-color: var(--exam); background: var(--exam-bg); } .callout-exam .callout-label { color: var(--exam); }
+.callout-warn { border-left-color: var(--warn); background: var(--warn-bg); } .callout-warn .callout-label { color: var(--warn); }
+.callout-read { border-left-color: var(--read); background: var(--read-bg); } .callout-read .callout-label { color: var(--read); }
+
+/* ── 図 ── */
+.diagram-viz svg { border-radius: 8px; }
+
+/* ── テーブル ── */
+.table-wrap { overflow-x: auto; margin: 1.3rem 0; border: 1px solid var(--line); border-radius: var(--radius); }
+table { border-collapse: collapse; width: 100%; font-size: 0.94rem; }
+th, td { text-align: left; padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+thead th { background: var(--accent-tint); font-size: 0.88rem; color: var(--accent-deep); border-bottom: 2px solid var(--line-strong); }
+tbody tr:last-child td { border-bottom: 0; }
+tbody td:first-child, th[scope] { white-space: nowrap; }
+
+/* ── まとめ ── */
+.keypoints { margin: 2.4rem 0; padding: 1.2rem 1.4rem; background: var(--paper-2); border-radius: var(--radius); border: 1px solid var(--line); }
+.keypoints h2 { font-size: 1.05rem; margin: 0 0 0.7rem; padding: 0; border: 0; }
+.keypoints ul { margin: 0; padding-left: 1.2rem; }
+.keypoints li { margin: 0.45rem 0; font-size: 0.96rem; }
+
+/* ── Quiz ── */
+.quiz-section { margin-top: 2.8rem; border-top: 2px solid var(--ink); padding-top: 1.4rem; }
+.quiz-section > h2 { font-size: 1.25rem; margin: 0 0 1rem; }
+.quiz { background: #fff; border: 1px solid var(--line-strong); border-radius: var(--radius); padding: 1.2rem 1.3rem; box-shadow: var(--shadow); }
+.quiz-count { font-size: 0.78rem; color: var(--ink-faint); font-weight: 700; letter-spacing: 0.04em; }
+.quiz-q { font-size: 1.05rem; font-weight: 700; margin: 0.2rem 0 1rem; line-height: 1.6; }
+.quiz-options { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.55rem; }
+.quiz-option { width: 100%; text-align: left; font: inherit; font-size: 0.97rem; cursor: pointer; background: var(--paper); border: 1px solid var(--line-strong); border-radius: var(--radius); padding: 0.7rem 0.9rem; display: flex; gap: 0.6rem; align-items: flex-start; transition: border-color 0.15s, background 0.15s; }
+.quiz-option:hover:not(:disabled) { border-color: var(--accent); background: var(--accent-tint); }
+.quiz-option:disabled { cursor: default; }
+.quiz-mark { font-weight: 700; min-width: 1.1em; }
+.quiz-option.is-correct { border-color: var(--tip); background: var(--tip-bg); } .quiz-option.is-correct .quiz-mark { color: var(--tip); }
+.quiz-option.is-wrong { border-color: var(--warn); background: var(--warn-bg); } .quiz-option.is-wrong .quiz-mark { color: var(--warn); }
+.quiz-explain { margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed var(--line-strong); }
+.quiz-explain p { margin: 0 0 0.8rem; font-size: 0.95rem; }
+.quiz-verdict { font-weight: 700; } .quiz-verdict.ok { color: var(--tip); } .quiz-verdict.ng { color: var(--warn); }
+.quiz-result { text-align: center; }
+.quiz-score { font-size: 1.1rem; margin: 0.2rem 0 0.6rem; } .quiz-score strong { color: var(--accent); font-size: 1.4rem; }
+.quiz-msg { color: var(--ink-soft); margin: 0 0 1rem; }
+
+.module-nav { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2.6rem; padding-top: 1.4rem; border-top: 1px solid var(--line); }
+.module-nav .btn { max-width: 48%; }
+
+/* ── 用語集・ガイド・About・Privacy ── */
+.glossary h1, .guide h1, .about h1, .privacy h1 { font-family: var(--serif); font-size: 1.7rem; margin: 0 0 0.8rem; }
+.page-lead { color: var(--ink-soft); margin: 0 0 2rem; }
+.glossary h2 { font-size: 1.1rem; margin: 2rem 0 0.8rem; padding-left: 0.6rem; border-left: 4px solid var(--accent); }
+.term-list { margin: 0; }
+.term-list dt { font-weight: 700; font-size: 1.02rem; margin-top: 1.3rem; scroll-margin-top: 4.5rem; }
+.term-list dd { margin: 0.3rem 0 0; color: var(--ink-soft); }
+.term-list .related { display: block; margin-top: 0.4rem; font-size: 0.84rem; color: var(--ink-faint); }
+.guide h2, .about h2, .privacy h2 { font-size: 1.15rem; margin: 2rem 0 0.7rem; }
+.guide p, .about p, .privacy p { color: var(--ink-soft); }
+.guide .notice, .privacy .notice { font-size: 0.84rem; color: var(--ink-faint); border-top: 1px solid var(--line); padding-top: 1rem; margin-top: 2rem; }
+.back { margin-top: 2rem; }
+
+/* ── フッタ ── */
+.site-footer { border-top: 1px solid var(--line); background: var(--paper-2); margin-top: 2rem; }
+.footer-inner { max-width: 980px; margin: 0 auto; padding: 1.6rem 1.2rem 2.4rem; }
+.footer-nav { display: flex; flex-wrap: wrap; gap: 0.6rem 1.2rem; margin-bottom: 0.8rem; }
+.footer-nav a { font-size: 0.88rem; color: var(--ink-soft); }
+.footer-note { font-size: 0.8rem; color: var(--ink-faint); margin: 0; }
+
+/* ── レスポンシブ ── */
+@media (max-width: 680px) {
+  .site-nav { display: none; }
+  .menu-toggle { display: flex; }
+  .site-nav.open { display: flex; flex-direction: column; gap: 0.2rem; position: absolute; left: 0; right: 0; top: 100%; background: var(--paper); border-bottom: 1px solid var(--line); padding: 0.6rem 1.2rem 1rem; margin-left: 0; }
+  .hero h1 { font-size: 1.5rem; }
+  .module-header h1 { font-size: 1.4rem; }
+  table { font-size: 0.86rem; }
+  th, td { padding: 0.5rem 0.6rem; }
+}
