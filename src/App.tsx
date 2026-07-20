@@ -79,6 +79,9 @@ function renderTokens(tokens: InlineToken[], navigate: (r: Route) => void, keyBa
       }
       case 'link':
         if (/^https?:\/\//.test(tk.url)) return <a key={key} href={tk.url} target="_blank" rel="noopener noreferrer">{tk.label}</a>;
+        // 同一ドメインでも当サイト（BASE）の外を指すパスは SPA ルータで解決できない。
+        // その場合は preventDefault せず、ブラウザに通常遷移させる（study-apps.com 内の姉妹サイト向け）。
+        if (!tk.url.startsWith(`${BASE}/`)) return <a key={key} href={tk.url}>{tk.label}</a>;
         return <a key={key} href={tk.url} onClick={(e) => { e.preventDefault(); navigate(parseRoute(tk.url)); }}>{tk.label}</a>;
       case 'bold': return <strong key={key}>{renderTokens(tk.children, navigate, key)}</strong>;
       case 'code': return <code key={key}>{tk.v}</code>;
