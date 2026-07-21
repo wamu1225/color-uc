@@ -405,6 +405,7 @@ function Footer({ navigate }: { navigate: (r: Route) => void }) {
           <a href={`${BASE}/guide/`} onClick={(e) => { e.preventDefault(); navigate({ view: 'guide' }); }}>試験ガイド</a>
           <a href={`${BASE}/about/`} onClick={(e) => { e.preventDefault(); navigate({ view: 'about' }); }}>このサイトについて</a>
           <a href={`${BASE}/privacy/`} onClick={(e) => { e.preventDefault(); navigate({ view: 'privacy' }); }}>プライバシーポリシー</a>
+          <a href="https://study-apps.com/editorial-policy/">編集方針</a>
           <a href="https://study-apps.com/" target="_blank" rel="noopener noreferrer">study-apps.com</a>
         </nav>
         <p className="footer-note">個人運営の学習支援サイトです。色彩検定協会の公式サイトではありません。色覚・目に関する記述は一般的な説明で、医学的助言ではありません。</p>
