@@ -127,12 +127,26 @@ function writePage(subpath: string, fullTitle: string, description: string, body
 let count = 0;
 for (const mod of modules) {
   const title = `${mod.title} | ${SITE_NAME}`;
+  // クイズスニペット（最初の3問・静的HTMLにも本文として出す）
+  const quizSnippet = mod.quiz.slice(0, 3).map((q, qi) => {
+    const correctAnswer = q.options[q.correctAnswer];
+    return `<div style="margin-bottom:12px;padding:12px;background:#f4f7f5;border-radius:6px;border-left:3px solid #1f6f5c">
+  <p style="margin:0 0 6px;font-weight:600;color:#185647">Q${qi + 1}. ${esc(q.question)}</p>
+  <p style="margin:0;color:#444;font-size:0.92rem">A. ${esc(correctAnswer)}</p>
+</div>`;
+  }).join('\n');
+  const quizSnippetHtml = `<section style="margin-top:22px">
+  <h2 style="font-size:1.05rem;font-weight:700;margin-bottom:10px;color:#185647">確認クイズ（抜粋）</h2>
+  ${quizSnippet}
+  <p style="margin-top:10px;font-size:0.9rem;color:#555">全${mod.quiz.length}問のクイズはサイトのインタラクティブ版でお試しください。</p>
+</section>`;
   const body = `${banner}${articleOpen}
   <nav style="margin-bottom:14px;font-size:0.85rem"><a href="${BASE}/" style="color:#1f6f5c;text-decoration:none">ホーム</a> / 第${mod.chapter}章 ${esc(chapterNames[mod.chapter])}</nav>
   <h1 style="font-size:1.55rem;font-weight:700;border-bottom:2px solid #1f6f5c;padding-bottom:8px;margin-bottom:10px">${esc(mod.title)}</h1>
   <p style="color:#4f5953;margin-bottom:16px;font-size:1.02rem">${esc(mod.description)}</p>
   ${mdToHtml(mod.content)}
   ${mod.keyPoints ? `<h2 style="font-size:1.05rem;margin:22px 0 8px">このモジュールのまとめ</h2><ul style="padding-left:20px">${mod.keyPoints.map((k) => `<li>${esc(k)}</li>`).join('')}</ul>` : ''}
+  ${quizSnippetHtml}
   <nav style="margin-top:26px;border-top:1px solid #dfe3dc;padding-top:14px"><a href="${BASE}/" style="color:#1f6f5c;text-decoration:none">← ホームへ戻る</a></nav>
   ${disclaimer}
 </article>`;
