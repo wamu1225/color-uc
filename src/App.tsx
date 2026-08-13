@@ -226,7 +226,7 @@ function Home({ chapters, progress, navigate }: { chapters: { n: number; name: s
       <section className="hero">
         <p className="hero-eyebrow">文部科学省後援・色彩検定 UC級</p>
         <h1>色のユニバーサルデザインを、基礎からやさしく</h1>
-        <p className="hero-lead">色の見え方は人それぞれ。色覚タイプや加齢による違いを理解し、だれにでも伝わる配色を学ぶ——色彩検定UC級の学習ノートです。図と確認問題でひとつずつ理解していきます。</p>
+        <p className="hero-lead">色の見え方は人それぞれ。色覚タイプや加齢による違いを理解し、だれにでも伝わる配色を学ぶ、色彩検定UC級の学習ノートです。図と確認問題でひとつずつ理解していきます。</p>
         <div className="hero-actions">
           <button className="btn btn-primary" onClick={() => navigate({ view: 'module', id: modules[0].id })}>最初のモジュールから始める</button>
           <button className="btn" onClick={() => navigate({ view: 'guide' })}>試験ガイドを見る</button>
