@@ -6,7 +6,7 @@ import type { ReactNode } from 'react';
 export const DIAGRAM_KEYS = [
   'cud-before-after', 'meido-contrast', 'spectral', 'confusion-pairs', 'confusion-lines',
   'cone-sensitivity', 'opponent-stages', 'type-cones', 'vision-conditions',
-  'name-modifiers', 'x-linked', 'lens-transmittance', 'cud-cycle',
+  'name-modifiers', 'x-linked', 'lens-transmittance', 'cud-cycle', 'color-roles',
 ] as const;
 
 function Figure({ label, children, max = 420 }: { label: string; children: ReactNode; max?: number }) {
@@ -747,6 +747,65 @@ function CudCycle() {
   );
 }
 
+// ── 色の3つのはたらき：同じ色でも役割が違う ──────────────────────
+// 「識別」「誘目」「認知」は色の使われ方の分類であって特定の物の形ではないため、
+// 幾何プリミティブ（線・円・信号灯の輪郭）で成立する「関係を示す図」として設計。
+function ColorRoles() {
+  const W = 460, panelW = 138, gap = 12, panelH = 150, top = 8;
+  const H = top + panelH + 44;
+  const panels = [
+    { key: 'identify', title: '識別', sub: '見分ける・区別する' },
+    { key: 'attract', title: '誘目', sub: '目を引きつける' },
+    { key: 'cognize', title: '認知', sub: '意味を伝える' },
+  ];
+  return (
+    <Figure
+      label="色の3つのはたらきを、同じ場面での使われ方の違いとして示した図です。識別は複数の色を並べて系統を見分けさせ、誘目は周囲を落ち着いた色にして1点だけ目立つ色を置き、認知は「赤＝止まれ」のように特定の色に固定された意味を割り当てます。同じ色でも、使い方によって果たす役割が違うことを表しています。"
+      max={460}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} width="100%" role="img" aria-label="色の3つのはたらき（識別・誘目・認知）を、同じ場面での使われ方の違いとして示した図">
+        {panels.map((p, i) => {
+          const x = 8 + i * (panelW + gap);
+          return (
+            <g key={p.key}>
+              <rect x={x} y={top} width={panelW} height={panelH} rx={8} fill="#fbf9f5" stroke="#cfc9bf" />
+              {p.key === 'identify' && (
+                <g>
+                  {[
+                    ['#c0392b', 30], ['#2f9e44', 55], ['#2f5fa8', 80], ['#d9822b', 105],
+                  ].map(([c, y]) => (
+                    <g key={y as number}>
+                      <line x1={x + 16} y1={top + (y as number)} x2={x + panelW - 16} y2={top + (y as number)} stroke={c as string} strokeWidth="5" strokeLinecap="round" />
+                    </g>
+                  ))}
+                </g>
+              )}
+              {p.key === 'attract' && (
+                <g>
+                  {[[24, 30], [86, 34], [30, 70], [90, 95], [45, 110], [95, 55]].map(([cx, cy], gi) => (
+                    <circle key={gi} cx={x + (cx as number)} cy={top + (cy as number)} r={7} fill="#c9c3b6" />
+                  ))}
+                  <circle cx={x + panelW / 2} cy={top + panelH / 2} r={13} fill="#c0392b" />
+                </g>
+              )}
+              {p.key === 'cognize' && (
+                <g>
+                  <rect x={x + panelW / 2 - 18} y={top + 18} width={36} height={100} rx={8} fill="#33312c" />
+                  <circle cx={x + panelW / 2} cy={top + 38} r={11} fill="#c0392b" />
+                  <circle cx={x + panelW / 2} cy={top + 68} r={11} fill="#3a3630" opacity="0.5" />
+                  <circle cx={x + panelW / 2} cy={top + 98} r={11} fill="#3a3630" opacity="0.5" />
+                </g>
+              )}
+              <text x={x + panelW / 2} y={top + panelH + 20} textAnchor="middle" fontSize="14" fontWeight="700" fill="#333">{p.title}</text>
+              <text x={x + panelW / 2} y={top + panelH + 36} textAnchor="middle" fontSize="10.5" fill="#666">{p.sub}</text>
+            </g>
+          );
+        })}
+      </svg>
+    </Figure>
+  );
+}
+
 export default function ConceptDiagram({ dkey }: { dkey: string }) {
   switch (dkey) {
     case 'cud-before-after': return <CudBeforeAfter />;
@@ -762,6 +821,7 @@ export default function ConceptDiagram({ dkey }: { dkey: string }) {
     case 'x-linked': return <XLinked />;
     case 'lens-transmittance': return <LensTransmittance />;
     case 'cud-cycle': return <CudCycle />;
+    case 'color-roles': return <ColorRoles />;
     default: return null;
   }
 }
