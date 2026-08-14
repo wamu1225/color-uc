@@ -1,13 +1,29 @@
 // scripts/prerender.ts — SSG。各ページの dist/<page>/index.html にクローラー向け静的フォールバックHTML・
 // per-page meta・JSON-LD を焼き込み、sitemap.xml を生成。比較表は HTML <table> に変換して残す。
-// 視覚タグ（[[huecircle]] / [[diagram:KEY]]）は React専用なので静的HTMLでは除去する。
-// 実行: npx tsx scripts/prerender.ts（npm run predeploy 内）
+// 視覚タグ（[[huecircle]] / [[diagram:KEY]]）は下の renderFigureTag で SSR して静的HTMLにも出す。
+// 実行: npx tsx --tsconfig tsconfig.app.json scripts/prerender.ts（npm run predeploy 内）
 import * as fs from 'fs';
 import * as path from 'path';
+import React from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
 import { modules } from '../src/data/modules';
 import { glossary } from '../src/data/glossary';
 import { chapterNames } from '../src/data/chapters';
 import { EXAM_CONFIG } from '../src/data/examConfig';
+import HueCircle from '../src/components/HueCircle';
+import ConceptDiagram from '../src/components/ConceptDiagram';
+
+// 図（[[huecircle]] / [[diagram:KEY]]）を静的HTMLにも出す（O-2-19・2026-08-15）。
+// 従来は「React専用なので静的HTMLでは除去する」としていたが、これがそのまま
+// クローラー不可視の欠落だった（4-2-confusion-colorsのような主題そのものの図も含む）。
+// react-dom/server で App.tsx と同じコンポーネントをそのままSSRする＝手でSVGを
+// 書き写さない。実行には --tsconfig tsconfig.app.json（automatic JSX runtime）が必須。
+function renderFigureTag(tag: string): string | null {
+  if (tag === '[[huecircle]]') return renderToStaticMarkup(React.createElement(HueCircle));
+  const dg = tag.match(/^\[\[diagram:([a-z0-9-]+)\]\]$/);
+  if (dg) return renderToStaticMarkup(React.createElement(ConceptDiagram, { dkey: dg[1] }));
+  return null;
+}
 
 const DIST_DIR = path.resolve(process.cwd(), 'dist');
 const INDEX_HTML_PATH = path.join(DIST_DIR, 'index.html');
@@ -20,14 +36,17 @@ const inlineHtml = (s: string) => esc(s.replace(/\[\[term:([^\]]+)\]\]/g, '$1'))
 const CALL: Record<string, string> = { '💡': 'コツ', '🎯': '試験ポイント', '⚠️': '注意', '📖': '発展' };
 
 function mdToHtml(content: string): string {
-  // 視覚タグを除去（React専用）
-  const cleaned = content.replace(/^\[\[(?:huecircle|tonemap|diagram:[a-z0-9-]+)\]\]$/gm, '');
-  const lines = cleaned.split('\n');
+  const lines = content.split('\n');
   const out: string[] = [];
   let i = 0;
   while (i < lines.length) {
     const t = lines[i].trim();
     if (t === '') { i++; continue; }
+    if (/^\[\[.*?\]\]$/.test(t)) {
+      const fig = renderFigureTag(t);
+      if (fig) out.push(fig);
+      i++; continue;
+    }
     if (/^---+$/.test(t)) { out.push('<hr style="border:0;border-top:1px solid #dfe3dc;margin:18px 0">'); i++; continue; }
     if (t.startsWith('### ')) { out.push(`<h3 style="font-size:1.05rem;margin:18px 0 6px">${inlineHtml(t.slice(4))}</h3>`); i++; continue; }
     if (t.startsWith('## ')) { out.push(`<h2 style="font-size:1.2rem;margin:22px 0 8px;border-left:4px solid #1f6f5c;padding-left:10px">${inlineHtml(t.slice(3))}</h2>`); i++; continue; }
