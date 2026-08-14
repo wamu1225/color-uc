@@ -6,6 +6,7 @@ import type { ReactNode } from 'react';
 export const DIAGRAM_KEYS = [
   'cud-before-after', 'meido-contrast', 'spectral', 'confusion-pairs', 'confusion-lines',
   'cone-sensitivity', 'opponent-stages', 'type-cones', 'vision-conditions',
+  'name-modifiers', 'x-linked', 'lens-transmittance', 'cud-cycle',
 ] as const;
 
 function Figure({ label, children, max = 420 }: { label: string; children: ReactNode; max?: number }) {
@@ -558,6 +559,194 @@ function VisionConditions() {
   );
 }
 
+// ── 系統色名：修飾語が明度・彩度をどう動かすか ──────────────────────
+// 「明るい」「うすい」「こい」は基本色名に対して明度・彩度を変える一般原理を示す模式。
+// JIS慣用色名などの規定値を再現したものではなく、修飾語の効きめの方向を示す図。
+function hsl(h: number, s: number, l: number) {
+  return `hsl(${h} ${s}% ${l}%)`;
+}
+const NAME_ROWS: { base: string; hue: number; variants: { label: string; s: number; l: number }[] }[] = [
+  { base: '赤', hue: 5, variants: [{ label: '明るい赤', s: 78, l: 62 }, { label: '赤', s: 72, l: 45 }, { label: 'こい赤', s: 75, l: 28 }] },
+  { base: '緑', hue: 145, variants: [{ label: 'うすい緑', s: 45, l: 72 }, { label: '緑', s: 55, l: 40 }, { label: 'こい緑みの青', s: 55, l: 25 }] },
+];
+function NameModifiers() {
+  const W = 460, rowH = 128, top = 26;
+  const H = top + rowH * NAME_ROWS.length + 4;
+  const swW = 92, gap = 16, startX = 20, swH = 56;
+  return (
+    <Figure
+      label="基本色名に「明るい」「うすい」「こい」などの修飾語を付けると、明度・彩度がどちらへ動くかを示した模式です。実際の系統色名は基準となる修飾語の使い方が細かく定められていますが、ここでは効きめの方向（明るい＝明度が上がる、こい＝明度が下がり彩度が保たれる、うすい＝彩度が下がる）を示しています。JIS慣用色名などの正確な規定値を再現したものではありません。"
+      max={460}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} width="100%" role="img" aria-label="系統色名の修飾語が明度・彩度を動かす方向を示した模式図">
+        <defs>
+          <marker id="ucNmArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#8c8577" />
+          </marker>
+        </defs>
+        {NAME_ROWS.map((row, ri) => {
+          const y = top + ri * rowH;
+          const swY = y + 20;
+          return (
+            <g key={row.base}>
+              <text x={startX} y={y} fontSize="12" fontWeight="700" fill="#555">基本色名「{row.base}」</text>
+              {row.variants.map((v, vi) => {
+                const x = startX + vi * (swW + gap);
+                return (
+                  <g key={v.label}>
+                    <rect x={x} y={swY} width={swW} height={swH} rx={6} fill={hsl(row.hue, v.s, v.l)} stroke="#00000022" />
+                    <text x={x + swW / 2} y={swY + swH + 18} textAnchor="middle" fontSize="11.5" fill="#333">{v.label}</text>
+                  </g>
+                );
+              })}
+              {[0, 1].map((i) => (
+                <line
+                  key={i}
+                  x1={startX + swW * (i + 1) + gap * i + 4}
+                  y1={swY + swH / 2}
+                  x2={startX + swW * (i + 1) + gap * (i + 1) - 4}
+                  y2={swY + swH / 2}
+                  stroke="#8c8577"
+                  strokeWidth="1.3"
+                  markerEnd="url(#ucNmArrow)"
+                />
+              ))}
+            </g>
+          );
+        })}
+      </svg>
+    </Figure>
+  );
+}
+
+// ── X連鎖劣性遺伝：なぜ男性に多く現れるか ──────────────────────
+// 標準的なX連鎖劣性遺伝のモデル（教科書的な一般知識）。特定の家系や検査結果を示すものではない。
+function XLinked() {
+  const W = 460, H = 220;
+  const chromo = (x: number, y: number, variant: boolean, label: string) => (
+    <g key={label}>
+      <rect x={x} y={y} width={14} height={54} rx={7} fill={variant ? '#c96a5a' : '#e7e2d8'} stroke="#8c8577" strokeWidth="1" />
+      <text x={x + 7} y={y + 68} textAnchor="middle" fontSize="10" fill="#555">{label}</text>
+    </g>
+  );
+  return (
+    <Figure
+      label="X連鎖劣性遺伝の一般的なモデルです。女性はX染色体を2本持つため、1本が該当する型でも、もう1本が補って現れにくくなります（保因者）。男性はX染色体が1本（Y染色体と対）しかないため、その1本が該当する型だと、補う相手がなくそのまま特徴が現れます。これが男性に多く見られる理由です。特定の家系や検査結果を再現したものではありません。"
+      max={460}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} width="100%" role="img" aria-label="X連鎖劣性遺伝で男性に多く現れる理由を示す模式図。女性はX染色体2本で補われるが、男性はX染色体1本のため該当型がそのまま現れる">
+        <text x={20} y={20} fontSize="12.5" fontWeight="700" fill="#444">女性（XX）：2本のうち1本が該当型 → 現れにくい（保因者）</text>
+        <g transform="translate(20,32)">
+          {chromo(0, 0, false, 'X')}
+          {chromo(30, 0, true, 'X')}
+        </g>
+        <rect x={140} y={32} width="180" height="60" rx={8} fill="#f2efe9" stroke="#cfc9bf" />
+        <text x={230} y={58} textAnchor="middle" fontSize="11" fill="#555">もう1本のXが</text>
+        <text x={230} y={74} textAnchor="middle" fontSize="11" fill="#555">はたらきを補う</text>
+
+        <text x={20} y={140} fontSize="12.5" fontWeight="700" fill="#444">男性（XY）：X染色体は1本だけ → そのまま現れる</text>
+        <g transform="translate(20,152)">
+          {chromo(0, 0, true, 'X')}
+          <g>
+            <rect x={30} y={0} width="14" height="54" rx={7} fill="#e7e2d8" stroke="#8c8577" strokeWidth="1" strokeDasharray="3 3" />
+            <text x={37} y={68} textAnchor="middle" fontSize="10" fill="#555">Y</text>
+          </g>
+        </g>
+        <rect x={140} y={152} width="180" height="60" rx={8} fill="#fbeee9" stroke="#c96a5a" />
+        <text x={230} y={178} textAnchor="middle" fontSize="11" fill="#9a3a2f">補う相手がなく</text>
+        <text x={230} y={194} textAnchor="middle" fontSize="11" fill="#9a3a2f">特徴が現れる</text>
+      </svg>
+    </Figure>
+  );
+}
+
+// ── 水晶体の黄変化と透過率 ──────────────────────
+// 加齢で水晶体が黄変化すると短波長側の透過率が下がる、という定性的な傾向を示す模式カーブ
+// （実測データの再現ではなく、本文の説明を視覚化したもの）。
+function LensTransmittance() {
+  const W = 400, padL = 44, padB = 36, padT = 16, padR = 14;
+  const pw = W - padL - padR, ph = 170;
+  const H = padT + ph + padB;
+  const X = (x: number) => padL + x * pw;
+  const Y = (y: number) => padT + (1 - y) * ph;
+  const young = [[0, 0.86], [0.15, 0.88], [0.3, 0.9], [0.5, 0.91], [0.7, 0.92], [1, 0.92]];
+  const aged = [[0, 0.18], [0.15, 0.32], [0.3, 0.5], [0.5, 0.68], [0.7, 0.8], [1, 0.87]];
+  const path = (pts: number[][]) => pts.map((p, i) => `${i === 0 ? 'M' : 'L'} ${X(p[0]).toFixed(1)} ${Y(p[1]).toFixed(1)}`).join(' ');
+  return (
+    <Figure
+      label="加齢による水晶体の黄変化を、光の透過率のイメージで表した模式カーブです。若い水晶体（青線）は短波長（青紫）側もよく通しますが、黄変化した水晶体（オレンジ線）は短波長側の透過率が下がります。これが青系の色が見分けにくくなる理由です。実測データの再現ではなく、本文の説明を図にしたものです。"
+      max={400}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} width="100%" role="img" aria-label="若い水晶体と黄変化した水晶体で、短波長側の透過率がどう違うかを示す模式カーブ">
+        <rect x={padL} y={padT} width={pw} height={ph} fill="#fff" stroke="#e2dfd7" />
+        <path d={path(young)} fill="none" stroke="#2f5fa8" strokeWidth="2.4" />
+        <path d={path(aged)} fill="none" stroke="#d9822b" strokeWidth="2.4" />
+        <text x={X(0.06)} y={Y(0.92) - 6} fontSize="11" fontWeight="700" fill="#2f5fa8">若い水晶体</text>
+        <text x={X(0.32)} y={Y(0.5) - 6} fontSize="11" fontWeight="700" fill="#d9822b">黄変化した水晶体</text>
+        <text x={14} y={padT + ph / 2} textAnchor="middle" fontSize="11" fill="#555" transform={`rotate(-90 14 ${padT + ph / 2})`}>透過率</text>
+        <text x={padL + pw / 2} y={H - 8} textAnchor="middle" fontSize="11" fill="#555">波長（左＝短い／青紫・右＝長い／赤）</text>
+      </svg>
+    </Figure>
+  );
+}
+
+// ── CUDの進め方：設計→確認→修正のサイクル ──────────────────────
+function CudCycle() {
+  const W = 400, H = 300, cx = W / 2, cy = 150, r = 92;
+  const steps: { label: string; sub: [string, string]; angle: number }[] = [
+    { label: '設計', sub: ['明度差・模様・', '色名併記'], angle: -90 },
+    { label: '確認', sub: ['シミュレーション', '・当事者検証'], angle: 30 },
+    { label: '修正', sub: ['見つかった', '問題を直す'], angle: 150 },
+  ];
+  const pt = (angle: number, radius: number) => {
+    const rad = (angle * Math.PI) / 180;
+    return [cx + radius * Math.cos(rad), cy + radius * Math.sin(rad)];
+  };
+  return (
+    <Figure
+      label="CUDは設計・確認・修正の3段階を1回で終えず、くり返す循環的なプロセスです。とくに確認（シミュレーションや当事者検証）を経て問題が見つかったら、設計に戻って修正します。矢印が円を描いているのは、色だけで作って終わりにしないことを示しています。"
+      max={400}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} width="100%" role="img" aria-label="設計・確認・修正を円環状にくり返すCUDの進め方">
+        <defs>
+          <marker id="ucCycleArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#8c8577" />
+          </marker>
+        </defs>
+        {steps.map((s, i) => {
+          const next = steps[(i + 1) % steps.length];
+          const a1 = s.angle + 34, a2 = next.angle - 34;
+          const [x1, y1] = pt(a1, r);
+          const [x2, y2] = pt(a2, r);
+          const largeArc = 0;
+          return (
+            <path
+              key={`arc-${i}`}
+              d={`M ${x1.toFixed(1)} ${y1.toFixed(1)} A ${r} ${r} 0 ${largeArc} 1 ${x2.toFixed(1)} ${y2.toFixed(1)}`}
+              fill="none"
+              stroke="#8c8577"
+              strokeWidth="1.8"
+              markerEnd="url(#ucCycleArrow)"
+            />
+          );
+        })}
+        {steps.map((s) => {
+          const [x, y] = pt(s.angle, r);
+          return (
+            <g key={s.label}>
+              <circle cx={x} cy={y} r={40} fill="#fff" stroke="#2f6d5b" strokeWidth="2" />
+              <text x={x} y={y - 2} textAnchor="middle" fontSize="15" fontWeight="700" fill="#2f6d5b">{s.label}</text>
+              <text x={x} y={y + 16} textAnchor="middle" fontSize="9" fill="#666">{s.sub[0]}</text>
+              <text x={x} y={y + 27} textAnchor="middle" fontSize="9" fill="#666">{s.sub[1]}</text>
+            </g>
+          );
+        })}
+        <text x={cx} y={cy} textAnchor="middle" fontSize="11" fill="#999">くり返す</text>
+      </svg>
+    </Figure>
+  );
+}
+
 export default function ConceptDiagram({ dkey }: { dkey: string }) {
   switch (dkey) {
     case 'cud-before-after': return <CudBeforeAfter />;
@@ -569,6 +758,10 @@ export default function ConceptDiagram({ dkey }: { dkey: string }) {
     case 'opponent-stages': return <OpponentStages />;
     case 'type-cones': return <TypeCones />;
     case 'vision-conditions': return <VisionConditions />;
+    case 'name-modifiers': return <NameModifiers />;
+    case 'x-linked': return <XLinked />;
+    case 'lens-transmittance': return <LensTransmittance />;
+    case 'cud-cycle': return <CudCycle />;
     default: return null;
   }
 }
