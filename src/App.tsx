@@ -13,6 +13,27 @@ import HueCircle from './components/HueCircle';
 import ConceptDiagram from './components/ConceptDiagram';
 import Quiz from './components/Quiz';
 
+// サイトの署名モチーフ：無地・斜線・ドットの3片＝「色以外の手がかり」という本文の主題を意匠でも体現する。
+function BrandMark() {
+  return (
+    <svg className="brand-mark" width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
+      <defs>
+        <pattern id="bmDiag" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+          <rect width="4" height="4" fill="#1f6f5c" />
+          <line x1="0" y1="0" x2="0" y2="4" stroke="#eaf3f0" strokeWidth="1.6" />
+        </pattern>
+        <pattern id="bmDots" width="5" height="5" patternUnits="userSpaceOnUse">
+          <rect width="5" height="5" fill="#1f6f5c" />
+          <circle cx="2.5" cy="2.5" r="1" fill="#eaf3f0" />
+        </pattern>
+      </defs>
+      <rect x="0" y="0" width="6.5" height="22" rx="1.5" fill="#1f6f5c" />
+      <rect x="7.75" y="0" width="6.5" height="22" rx="1.5" fill="url(#bmDiag)" />
+      <rect x="15.5" y="0" width="6.5" height="22" rx="1.5" fill="url(#bmDots)" />
+    </svg>
+  );
+}
+
 const BASE = '/color-uc';
 const PROGRESS_KEY = 'color-uc-progress';
 
@@ -197,7 +218,7 @@ function Header({ route, navigate, menuOpen, setMenuOpen, chapters }: {
   return (
     <header className="site-header">
       <div className="header-inner">
-        <a className="brand" href={`${BASE}/`} onClick={(e) => { e.preventDefault(); navigate({ view: 'home' }); }}>色彩検定UC級 学習ノート</a>
+        <a className="brand" href={`${BASE}/`} onClick={(e) => { e.preventDefault(); navigate({ view: 'home' }); }}><BrandMark />色彩検定UC級 学習ノート</a>
         <button className="menu-toggle" aria-label="メニュー" aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}><span /><span /><span /></button>
         <nav className={`site-nav ${menuOpen ? 'open' : ''}`}>
           <a href={`${BASE}/`} onClick={(e) => { e.preventDefault(); navigate({ view: 'home' }); }} className={route.view === 'home' ? 'active' : ''}>ホーム</a>
@@ -231,10 +252,12 @@ function Home({ chapters, progress, navigate }: { chapters: { n: number; name: s
           <button className="btn btn-primary" onClick={() => navigate({ view: 'module', id: modules[0].id })}>最初のモジュールから始める</button>
           <button className="btn" onClick={() => navigate({ view: 'guide' })}>試験ガイドを見る</button>
         </div>
+        <div className="hero-hatch" aria-hidden="true"><span /><span /><span /><span /></div>
       </section>
       {chapters.map((ch) => (
         <section className="chapter-block" key={ch.n}>
           <div className="chapter-head"><span className="chapter-num">第{ch.n}章</span><h2>{ch.name}</h2></div>
+          <div className="chapter-rule" aria-hidden="true" />
           <ol className="module-list">
             {ch.items.map((m) => {
               const pr = progress[m.id];

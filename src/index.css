@@ -1,6 +1,9 @@
 /* index.css — デザイントークンとベース
    「色のユニバーサルデザイン」を学ぶサイトなので、デザイン自体が明度差・読みやすさのお手本になるよう、
-   本文は十分なコントラスト、アクセントは深い青緑（明度差を確保）。装飾は控えめに。 */
+   本文は十分なコントラスト、アクセントは深い青緑（明度差を確保）。装飾は控えめに。
+   見出し＝BIZ UDPGothic（UDフォント＝ユニバーサルデザインの理念を書体そのもので体現）。
+   モチーフ＝斜線・格子・ドットのハッチング（本文が教える「色以外の手がかり」を、サイトの意匠自体に使う）。 */
+@import url('https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700;900&display=swap');
 
 :root {
   --paper: #f6f7f5;
@@ -31,8 +34,11 @@
   --shadow: 0 1px 3px rgba(31, 36, 34, 0.06), 0 6px 20px rgba(31, 36, 34, 0.05);
 
   --font: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Noto Sans JP", Meiryo, system-ui, sans-serif;
-  --serif: "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif;
+  --serif: "BIZ UDPGothic", "BIZ UDGothic", "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
   --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+
+  /* ハッチングのモチーフ色（無彩色＝本文のハッチング解説と同じ「色に頼らない」トーン） */
+  --hatch-line: #c7cdc4;
 }
 
 * { box-sizing: border-box; }
