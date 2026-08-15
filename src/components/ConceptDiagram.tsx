@@ -6,7 +6,7 @@ import type { ReactNode } from 'react';
 export const DIAGRAM_KEYS = [
   'cud-before-after', 'meido-contrast', 'spectral', 'confusion-pairs', 'confusion-lines',
   'cone-sensitivity', 'opponent-stages', 'type-cones', 'vision-conditions',
-  'name-modifiers', 'x-linked', 'lens-transmittance', 'cud-cycle', 'color-roles',
+  'name-modifiers', 'x-linked', 'lens-transmittance', 'cud-cycle', 'color-roles', 'hatching-patterns',
 ] as const;
 
 function Figure({ label, children, max = 420 }: { label: string; children: ReactNode; max?: number }) {
@@ -806,6 +806,53 @@ function ColorRoles() {
   );
 }
 
+// ── ハッチング：模様だけで区別できることを示す ──────────────────────
+// 同一の灰色を敷き、模様（斜線・格子・ドット）だけを変えて4分類を作る。
+// 色を一切使わないことで「模様だけで見分けられる」という主張を裏づける。
+function HatchingPatterns() {
+  const W = 460, swW = 100, gap = 12, top = 8, swH = 90;
+  const H = top + swH + 34;
+  const items = [
+    { key: 'solid', label: '無地', fill: '#8a8a8a' },
+    { key: 'diag', label: '斜線', fill: 'url(#ucHatchDiag)' },
+    { key: 'grid', label: '格子', fill: 'url(#ucHatchGrid)' },
+    { key: 'dots', label: 'ドット', fill: 'url(#ucHatchDots)' },
+  ];
+  return (
+    <Figure
+      label="同じ灰色1色に、模様だけを変えて4種類に分けた図です。色をまったく使わなくても、無地・斜線・格子・ドットは形として区別できます。これがハッチングの効果で、色の見分けにくい人にも、白黒印刷やモノクロ表示でも情報が伝わります。"
+      max={460}
+    >
+      <svg viewBox={`0 0 ${W} ${H}`} width="100%" role="img" aria-label="無地・斜線・格子・ドットの4つの模様を同じ灰色で並べ、色なしでも模様だけで区別できることを示した図">
+        <defs>
+          <pattern id="ucHatchDiag" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <rect width="8" height="8" fill="#8a8a8a" />
+            <line x1="0" y1="0" x2="0" y2="8" stroke="#ffffff" strokeWidth="3" />
+          </pattern>
+          <pattern id="ucHatchGrid" width="10" height="10" patternUnits="userSpaceOnUse">
+            <rect width="10" height="10" fill="#8a8a8a" />
+            <line x1="0" y1="0" x2="10" y2="0" stroke="#ffffff" strokeWidth="2" />
+            <line x1="0" y1="0" x2="0" y2="10" stroke="#ffffff" strokeWidth="2" />
+          </pattern>
+          <pattern id="ucHatchDots" width="12" height="12" patternUnits="userSpaceOnUse">
+            <rect width="12" height="12" fill="#8a8a8a" />
+            <circle cx="6" cy="6" r="2.4" fill="#ffffff" />
+          </pattern>
+        </defs>
+        {items.map((it, i) => {
+          const x = 8 + i * (swW + gap);
+          return (
+            <g key={it.key}>
+              <rect x={x} y={top} width={swW} height={swH} rx={6} fill={it.fill} stroke="#00000022" />
+              <text x={x + swW / 2} y={top + swH + 20} textAnchor="middle" fontSize="13" fontWeight="700" fill="#333">{it.label}</text>
+            </g>
+          );
+        })}
+      </svg>
+    </Figure>
+  );
+}
+
 export default function ConceptDiagram({ dkey }: { dkey: string }) {
   switch (dkey) {
     case 'cud-before-after': return <CudBeforeAfter />;
@@ -822,6 +869,7 @@ export default function ConceptDiagram({ dkey }: { dkey: string }) {
     case 'lens-transmittance': return <LensTransmittance />;
     case 'cud-cycle': return <CudCycle />;
     case 'color-roles': return <ColorRoles />;
+    case 'hatching-patterns': return <HatchingPatterns />;
     default: return null;
   }
 }
