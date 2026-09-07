@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "validate": "tsx scripts/validate-data.ts",
-    "predeploy": "node ../../_pipeline/tmp-tools/predeploy-guard.mjs && npm run validate && npm run build && npx tsx --tsconfig tsconfig.app.json scripts/prerender.ts",
+    "predeploy": "node ../../_pipeline/tmp-tools/predeploy-guard.mjs && npm run validate && npm run build && npx tsx --tsconfig tsconfig.app.json scripts/prerender.ts && node ../../_pipeline/tmp-tools/prerender-svg-guard.mjs",
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
