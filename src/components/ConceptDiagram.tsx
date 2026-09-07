@@ -30,17 +30,17 @@ function CudBeforeAfter() {
           </pattern>
         </defs>
         {/* 左：色だけ */}
-        <text x="110" y="20" textAnchor="middle" fontSize="13" fontWeight="700" fill="#9a3a2f">改善前（色だけ）</text>
+        <text x="110" y="20" textAnchor="middle" fontSize="16" fontWeight="700" fill="#9a3a2f">改善前（色だけ）</text>
         <rect x="40" y="36" width="140" height="40" rx="4" fill="#c0392b" />
         <rect x="40" y="86" width="140" height="40" rx="4" fill="#2f9e44" />
-        <text x="110" y="152" textAnchor="middle" fontSize="11" fill="#555">色だけでは区別しにくい</text>
+        <text x="110" y="156" textAnchor="middle" fontSize="15" fill="#555">色だけでは区別しにくい</text>
         {/* 右：明度差＋模様＋ラベル */}
-        <text x="350" y="20" textAnchor="middle" fontSize="13" fontWeight="700" fill="#2f6d5b">改善後</text>
+        <text x="350" y="20" textAnchor="middle" fontSize="16" fontWeight="700" fill="#2f6d5b">改善後</text>
         <rect x="280" y="36" width="140" height="40" rx="4" fill="#e57373" />
-        <text x="350" y="61" textAnchor="middle" fontSize="13" fontWeight="700" fill="#5a1a14">未達成</text>
+        <text x="350" y="61" textAnchor="middle" fontSize="16" fontWeight="700" fill="#5a1a14">未達成</text>
         <rect x="280" y="86" width="140" height="40" rx="4" fill="url(#hatch)" />
-        <text x="350" y="111" textAnchor="middle" fontSize="13" fontWeight="700" fill="#ffffff">達成</text>
-        <text x="350" y="152" textAnchor="middle" fontSize="11" fill="#555">明度差＋模様＋文字で区別</text>
+        <text x="350" y="111" textAnchor="middle" fontSize="16" fontWeight="700" fill="#ffffff">達成</text>
+        <text x="350" y="156" textAnchor="middle" fontSize="15" fill="#555">明度差＋模様＋文字で区別</text>
       </svg>
     </Figure>
   );
@@ -51,10 +51,10 @@ function MeidoContrast() {
   return (
     <Figure label="図と背景の明度差が小さいと（左）読みにくく、明度差を大きくすると（右）読みやすくなります。色のUDでは、明度差をはっきりつけることが要になります。" max={460}>
       <svg viewBox="0 0 460 150" width="100%" role="img" aria-label="明度差の模式図">
-        <text x="110" y="20" textAnchor="middle" fontSize="13" fontWeight="700" fill="#9a3a2f">明度差が小さい</text>
+        <text x="110" y="20" textAnchor="middle" fontSize="16" fontWeight="700" fill="#9a3a2f">明度差が小さい</text>
         <rect x="30" y="34" width="160" height="90" rx="6" fill="#5fae6e" />
         <text x="110" y="86" textAnchor="middle" fontSize="22" fontWeight="700" fill="#b14b3f">あ</text>
-        <text x="350" y="20" textAnchor="middle" fontSize="13" fontWeight="700" fill="#2f6d5b">明度差が大きい</text>
+        <text x="350" y="20" textAnchor="middle" fontSize="16" fontWeight="700" fill="#2f6d5b">明度差が大きい</text>
         <rect x="270" y="34" width="160" height="90" rx="6" fill="#0d4d2b" />
         <text x="350" y="86" textAnchor="middle" fontSize="22" fontWeight="700" fill="#ffffff">あ</text>
       </svg>
@@ -78,8 +78,8 @@ function Spectral() {
       <svg viewBox={`0 0 ${W} ${H}`} width="100%" role="img" aria-label="分光反射率曲線の模式図">
         <rect x={padL} y={padT} width={pw} height={ph} fill="#fff" stroke="#e2dfd7" />
         <path d={d} fill="none" stroke="#c0392b" strokeWidth="3" />
-        <text x={14} y={padT + ph / 2} textAnchor="middle" fontSize="11" fill="#555" transform={`rotate(-90 14 ${padT + ph / 2})`}>反射率</text>
-        <text x={padL + pw / 2} y={H - 8} textAnchor="middle" fontSize="11" fill="#555">波長（左＝青／短い・右＝赤／長い）</text>
+        <text x={14} y={padT + ph / 2} textAnchor="middle" fontSize="13" fill="#555" transform={`rotate(-90 14 ${padT + ph / 2})`}>反射率</text>
+        <text x={padL + pw / 2} y={H - 8} textAnchor="middle" fontSize="13" fill="#555">波長（左＝青／短い・右＝赤／長い）</text>
       </svg>
     </Figure>
   );
@@ -116,29 +116,30 @@ function lumRatio(a: string, b: string) {
 }
 
 function ConfusionPairs() {
-  // 幅の内訳（合計470に収める）：ラベル78 / 左ペア146 / 間22 / 右ペア146 / 明度比66
-  const rowH = 46, top = 30, swW = 70, gap = 6;
-  const colL = 80, colR = colL + swW * 2 + gap + 22;
-  const W = 470, H = top + rowH * PAIRS.length + 16;
+  // ラベルを各行の見出し行に独立させ、2段目に swatch＋明度比 を並べる（横幅を稼ぐため）。
+  const rowH = 72, top = 34, swW = 68, gap = 6, midGap = 28;
+  const colL = 6, colR = colL + swW * 2 + gap + midGap;
+  const W = 470, H = top + rowH * PAIRS.length + 12;
   return (
     <Figure
       label="本文で挙げた組み合わせを実際の色で並べたものです。左は色のまま、右は色みを取り去って明度だけにしたものです。明度差の比が1に近い組みほど、色を手がかりにできないときに差が残りません。右列は明度をそろえて比べるための変換で、特定の色覚タイプの見え方を再現したものではありません。"
       max={470}
     >
       <svg viewBox={`0 0 ${W} ${H}`} width="100%" role="img" aria-label="混同しやすい色の組み合わせを、色のままと明度だけにした場合とで並べた図">
-        <text x={colL + swW + gap / 2} y={18} textAnchor="middle" fontSize="12" fontWeight="700" fill="#444">色のまま</text>
-        <text x={colR + swW + gap / 2} y={18} textAnchor="middle" fontSize="12" fontWeight="700" fill="#444">明度だけにする</text>
+        <text x={colL + swW + gap / 2} y={18} textAnchor="middle" fontSize="16" fontWeight="700" fill="#444">色のまま</text>
+        <text x={colR + swW + gap / 2} y={18} textAnchor="middle" fontSize="16" fontWeight="700" fill="#444">明度だけにする</text>
         {PAIRS.map((p, i) => {
-          const y = top + i * rowH;
+          const rowTop = top + i * rowH;
+          const swY = rowTop + 26;
           const r = lumRatio(p.a, p.b);
           return (
             <g key={p.label}>
-              <text x={6} y={y + 22} fontSize="10.5" fill="#333">{p.label}</text>
-              <rect x={colL} y={y} width={swW} height={34} rx={3} fill={p.a} />
-              <rect x={colL + swW + gap} y={y} width={swW} height={34} rx={3} fill={p.b} />
-              <rect x={colR} y={y} width={swW} height={34} rx={3} fill={grayOf(p.a)} />
-              <rect x={colR + swW + gap} y={y} width={swW} height={34} rx={3} fill={grayOf(p.b)} />
-              <text x={W - 4} y={y + 22} textAnchor="end" fontSize="10.5" fill={r < 1.5 ? '#9a3a2f' : '#555'}>
+              <text x={6} y={rowTop + 16} fontSize="16" fill="#333">{p.label}</text>
+              <rect x={colL} y={swY} width={swW} height={34} rx={3} fill={p.a} />
+              <rect x={colL + swW + gap} y={swY} width={swW} height={34} rx={3} fill={p.b} />
+              <rect x={colR} y={swY} width={swW} height={34} rx={3} fill={grayOf(p.a)} />
+              <rect x={colR + swW + gap} y={swY} width={swW} height={34} rx={3} fill={grayOf(p.b)} />
+              <text x={W - 4} y={swY + 22} textAnchor="end" fontSize="15" fill={r < 1.5 ? '#9a3a2f' : '#555'}>
                 明度比 {r.toFixed(1)}
               </text>
             </g>
@@ -169,9 +170,9 @@ const LOCUS: [number, number][] = [
 // 本図は2型を「色度図の外側にある」という位置関係の提示に留め、具体的な数値は読者向けキャプションでは出していない。
 // 2型は色度図の外側にあることに注意。anchor/dx/dy はラベルの置き場所。馬蹄形の輪郭や図の端に重ならない側へ逃がしている。
 const COPUNCTAL: { key: string; name: string; x: number; y: number; color: string; anchor: 'start' | 'end'; dx: number; dy: number }[] = [
-  { key: 'p', name: '1型の混同色中心', x: 0.747, y: 0.253, color: '#b23a2e', anchor: 'start', dx: 10, dy: 4 },
-  { key: 'd', name: '2型の混同色中心', x: 1.080, y: -0.080, color: '#1f6f43', anchor: 'end', dx: -10, dy: 4 },
-  { key: 't', name: '3型の混同色中心', x: 0.171, y: 0.000, color: '#2f5fa8', anchor: 'start', dx: 8, dy: 16 },
+  { key: 'p', name: '1型の混同色中心', x: 0.747, y: 0.253, color: '#b23a2e', anchor: 'start', dx: 12, dy: 6 },
+  { key: 'd', name: '2型の混同色中心', x: 1.080, y: -0.080, color: '#1f6f43', anchor: 'end', dx: -12, dy: 6 },
+  { key: 't', name: '3型の混同色中心', x: 0.171, y: 0.000, color: '#2f5fa8', anchor: 'start', dx: 10, dy: 22 },
 ];
 
 function ConfusionLines() {
@@ -205,8 +206,8 @@ function ConfusionLines() {
         {/* 軸 */}
         <line x1={X(xMin)} y1={Y(0)} x2={X(xMax)} y2={Y(0)} stroke="#cfc9bf" />
         <line x1={X(0)} y1={Y(yMin)} x2={X(0)} y2={Y(yMax)} stroke="#cfc9bf" />
-        <text x={X(0.55)} y={H - 10} textAnchor="middle" fontSize="11" fill="#555">x</text>
-        <text x={12} y={Y(0.4)} textAnchor="middle" fontSize="11" fill="#555" transform={`rotate(-90 12 ${Y(0.4)})`}>y</text>
+        <text x={X(0.55)} y={H - 8} textAnchor="middle" fontSize="16" fill="#555">x</text>
+        <text x={14} y={Y(0.4)} textAnchor="middle" fontSize="16" fill="#555" transform={`rotate(-90 14 ${Y(0.4)})`}>y</text>
 
         {/* 色度図の輪郭 */}
         <path d={locusPath} fill="#f2efe9" stroke="#8c8577" strokeWidth="1.4" />
@@ -221,16 +222,16 @@ function ConfusionLines() {
         {COPUNCTAL.map((c) => (
           <g key={c.key}>
             <circle cx={X(c.x)} cy={Y(c.y)} r={5} fill={c.color} stroke="#fff" strokeWidth="1.5" />
-            <text x={X(c.x) + c.dx} y={Y(c.y) + c.dy} textAnchor={c.anchor} fontSize="10.5" fontWeight="700" fill={c.color}>{c.name}</text>
+            <text x={X(c.x) + c.dx} y={Y(c.y) + c.dy} textAnchor={c.anchor} fontSize="16" fontWeight="700" fill={c.color}>{c.name}</text>
           </g>
         ))}
 
         {/* 凡例：馬蹄形の外側（右上の空き）に置く */}
-        <g transform={`translate(${X(0.66)}, ${Y(0.84)})`}>
-          <line x1={0} y1={6} x2={22} y2={6} stroke="#b23a2e" strokeWidth="1.6" />
-          <text x={27} y={9.5} fontSize="10.5" fill="#444">1型の混同色線</text>
-          <line x1={0} y1={22} x2={22} y2={22} stroke="#2f5fa8" strokeWidth="1.6" strokeDasharray="5 3" />
-          <text x={27} y={25.5} fontSize="10.5" fill="#444">3型の混同色線</text>
+        <g transform={`translate(${X(0.60)}, ${Y(0.87)})`}>
+          <line x1={0} y1={4} x2={20} y2={4} stroke="#b23a2e" strokeWidth="1.6" />
+          <text x={25} y={9} fontSize="16" fill="#444">1型の混同色線</text>
+          <line x1={0} y1={30} x2={20} y2={30} stroke="#2f5fa8" strokeWidth="1.6" strokeDasharray="5 3" />
+          <text x={25} y={35} fontSize="16" fill="#444">3型の混同色線</text>
         </g>
       </svg>
     </Figure>
@@ -287,11 +288,11 @@ function ConeSensitivity() {
   const W = 470, padL = 42, padR = 16, padT = 18, ph = 168;
   const lMin = 400, lMax = 700;
   const plotB = padT + ph;
-  const stripY = plotB + 34, stripH = 11;
-  const H = stripY + stripH + 24;
+  const stripY = plotB + 58, stripH = 11;
+  const H = stripY + stripH + 34;
   const X = (l: number) => padL + ((l - lMin) / (lMax - lMin)) * (W - padL - padR);
   const Y = (v: number) => padT + (1 - v) * ph;
-  const ticks = [400, 450, 500, 550, 600, 650, 700];
+  const ticks = [400, 500, 600, 700];
   // ピークの真下は3本とも空いているので、そこにラベルを置いて点線でカーブとつなぐ。
   const labelAt: Record<ConeKey, number> = { S: 0.5, M: 0.42, L: 0.28 };
   return (
@@ -315,10 +316,10 @@ function ConeSensitivity() {
         {[0, 0.5, 1].map((v) => (
           <g key={v}>
             <line x1={padL} y1={Y(v)} x2={W - padR} y2={Y(v)} stroke="#e2dfd7" />
-            <text x={padL - 6} y={Y(v) + 4} textAnchor="end" fontSize="10" fill="#777">{v.toFixed(1)}</text>
+            <text x={padL - 6} y={Y(v) + 5} textAnchor="end" fontSize="16" fill="#777">{v.toFixed(1)}</text>
           </g>
         ))}
-        <text x={13} y={Y(0.5)} textAnchor="middle" fontSize="11" fill="#555" transform={`rotate(-90 13 ${Y(0.5)})`}>相対感度</text>
+        <text x={15} y={Y(0.5)} textAnchor="middle" fontSize="16" fill="#555" transform={`rotate(-90 15 ${Y(0.5)})`}>相対感度</text>
 
         {/* 感度カーブ */}
         {(['S', 'M', 'L'] as ConeKey[]).map((k) => (
@@ -331,21 +332,21 @@ function ConeSensitivity() {
           return (
             <g key={`lb-${k}`}>
               <line x1={px} y1={Y(0.97)} x2={px} y2={ly - 12} stroke={CONE[k].color} strokeWidth="1" strokeDasharray="3 3" opacity="0.7" />
-              <text x={px} y={ly} textAnchor="middle" fontSize="12.5" fontWeight="700" fill={CONE[k].color}>{CONE[k].name}</text>
+              <text x={px} y={ly} textAnchor="middle" fontSize="16" fontWeight="700" fill={CONE[k].color}>{CONE[k].name}</text>
             </g>
           );
         })}
 
         {/* 重なりの注記 */}
-        <line x1={X(520)} y1={plotB + 6} x2={X(620)} y2={plotB + 6} stroke="#8c8577" strokeWidth="1" />
-        <text x={(X(520) + X(620)) / 2} y={plotB + 19} textAnchor="middle" fontSize="11" fill="#555">LとMが重なる範囲</text>
+        <line x1={X(520)} y1={plotB + 8} x2={X(620)} y2={plotB + 8} stroke="#8c8577" strokeWidth="1" />
+        <text x={(X(520) + X(620)) / 2} y={plotB + 24} textAnchor="middle" fontSize="16" fill="#555">LとMが重なる範囲</text>
 
         {/* 波長軸と、波長のおおよその色 */}
         {ticks.map((t) => (
-          <text key={t} x={X(t)} y={stripY - 4} textAnchor="middle" fontSize="10" fill="#777">{t}</text>
+          <text key={t} x={X(t)} y={stripY - 8} textAnchor="middle" fontSize="16" fill="#777">{t}</text>
         ))}
         <rect x={padL} y={stripY} width={W - padL - padR} height={stripH} fill="url(#ucSpectrum)" stroke="#cfc9bf" strokeWidth="0.6" />
-        <text x={padL + (W - padL - padR) / 2} y={stripY + stripH + 17} textAnchor="middle" fontSize="11" fill="#555">
+        <text x={padL + (W - padL - padR) / 2} y={stripY + stripH + 22} textAnchor="middle" fontSize="16" fill="#555">
           波長（nm）　左＝短い（青紫）／右＝長い（赤）
         </text>
       </svg>
@@ -356,7 +357,7 @@ function ConeSensitivity() {
 // 段階説：入口は三色説（L/M/S で受け取る）、その後の処理は反対色説（赤⇔緑・黄⇔青・白⇔黒）。
 function OpponentStages() {
   const W = 470, H = 236;
-  const boxW = 104, boxH = 40;
+  const boxW = 136, boxH = 46;
   const leftX = 16, rightX = W - 16 - boxW;
   const rows = [56, 110, 164];
   const cones: { k: ConeKey; y: number; note: string }[] = [
@@ -376,24 +377,24 @@ function OpponentStages() {
       max={470}
     >
       <svg viewBox={`0 0 ${W} ${H}`} width="100%" role="img" aria-label="段階説の模式図。左のL・M・S錐体が右の赤緑・黄青・白黒の反対色の組に変換される">
-        <text x={leftX + boxW / 2} y={22} textAnchor="middle" fontSize="12.5" fontWeight="700" fill="#444">入口＝三色説</text>
-        <text x={leftX + boxW / 2} y={38} textAnchor="middle" fontSize="10.5" fill="#777">3種類の錐体で受け取る</text>
-        <text x={rightX + boxW / 2} y={22} textAnchor="middle" fontSize="12.5" fontWeight="700" fill="#444">処理＝反対色説</text>
-        <text x={rightX + boxW / 2} y={38} textAnchor="middle" fontSize="10.5" fill="#777">反対の組で処理する</text>
+        <text x={leftX} y={24} fontSize="16" fontWeight="700" fill="#444">入口＝三色説</text>
+        <text x={leftX} y={44} fontSize="16" fill="#777">3種類の錐体で受け取る</text>
+        <text x={rightX + boxW} y={24} textAnchor="end" fontSize="16" fontWeight="700" fill="#444">処理＝反対色説</text>
+        <text x={rightX + boxW} y={44} textAnchor="end" fontSize="16" fill="#777">反対の組で処理する</text>
 
         {/* 受容の段階 */}
         {cones.map(({ k, y, note }) => (
           <g key={k}>
             <rect x={leftX} y={y} width={boxW} height={boxH} rx={5} fill="#ffffff" stroke={CONE[k].color} strokeWidth="2" />
-            <text x={leftX + boxW / 2} y={y + 18} textAnchor="middle" fontSize="13" fontWeight="700" fill={CONE[k].color}>{CONE[k].name}</text>
-            <text x={leftX + boxW / 2} y={y + 32} textAnchor="middle" fontSize="10.5" fill="#666">{note}</text>
+            <text x={leftX + boxW / 2} y={y + 18} textAnchor="middle" fontSize="16" fontWeight="700" fill={CONE[k].color}>{CONE[k].name}</text>
+            <text x={leftX + boxW / 2} y={y + 38} textAnchor="middle" fontSize="16" fill="#666">{note}</text>
           </g>
         ))}
 
         {/* 変換の帯 */}
         <rect x={midX - 46} y={rows[0] - 6} width={92} height={rows[2] + boxH + 6 - rows[0]} rx={8} fill="#f2efe9" stroke="#cfc9bf" />
-        <text x={midX} y={rows[1] + 14} textAnchor="middle" fontSize="11.5" fontWeight="700" fill="#555">信号を</text>
-        <text x={midX} y={rows[1] + 30} textAnchor="middle" fontSize="11.5" fontWeight="700" fill="#555">組み合わせる</text>
+        <text x={midX} y={rows[1] + 16} textAnchor="middle" fontSize="16" fontWeight="700" fill="#555">信号を</text>
+        <text x={midX} y={rows[1] + 36} textAnchor="middle" fontSize="16" fontWeight="700" fill="#555">組み合わせる</text>
 
         {/* 反対色チャンネル */}
         {channels.map((c) => (
@@ -401,8 +402,8 @@ function OpponentStages() {
             <rect x={rightX} y={c.y} width={boxW} height={boxH} rx={5} fill="#ffffff" stroke="#8c8577" strokeWidth="1.4" />
             <rect x={rightX} y={c.y} width={6} height={boxH} rx={3} fill={c.a} />
             <rect x={rightX + boxW - 6} y={c.y} width={6} height={boxH} rx={3} fill={c.b} />
-            <text x={rightX + boxW / 2} y={c.y + 18} textAnchor="middle" fontSize="13" fontWeight="700" fill="#333">{c.label}</text>
-            <text x={rightX + boxW / 2} y={c.y + 32} textAnchor="middle" fontSize="10" fill="#666">{c.calc}</text>
+            <text x={rightX + boxW / 2} y={c.y + 18} textAnchor="middle" fontSize="16" fontWeight="700" fill="#333">{c.label}</text>
+            <text x={rightX + boxW / 2} y={c.y + 38} textAnchor="middle" fontSize="16" fill="#666">{c.calc}</text>
           </g>
         ))}
 
@@ -427,13 +428,13 @@ function OpponentStages() {
 // 色覚タイプと錐体の対応。C型の3本に対し、P型はL、D型はMがはたらかない状態を同じ縮尺で並べる。
 // 見え方の再現ではなく、どの錐体が関わるかを示す図。
 function TypeCones() {
-  const W = 470, headH = 26, rowH = 84;
-  const H = headH + rowH * 3 + 12;
+  const W = 470, headH = 14, rowH = 132;
+  const H = headH + rowH * 3 + 20;
   const cx = 116, cw = W - cx - 14, chH = 54;
-  const rowsDef: { name: string; sub: string; missing: ConeKey | null; note: [string, string] }[] = [
-    { name: 'C型', sub: '正常3色覚', missing: null, note: ['L・M・Sの', '3種類がはたらく'] },
-    { name: 'P型', sub: '眼科学会：1型', missing: 'L', note: ['L錐体（赤寄り）が', 'はたらかない'] },
-    { name: 'D型', sub: '眼科学会：2型', missing: 'M', note: ['M錐体（緑寄り）が', 'はたらかない'] },
+  const rowsDef: { name: string; sub: string; missing: ConeKey | null }[] = [
+    { name: 'C型', sub: '正常3色覚', missing: null },
+    { name: 'P型', sub: '眼科学会：1型', missing: 'L' },
+    { name: 'D型', sub: '眼科学会：2型', missing: 'M' },
   ];
   return (
     <Figure
@@ -441,19 +442,16 @@ function TypeCones() {
       max={470}
     >
       <svg viewBox={`0 0 ${W} ${H}`} width="100%" role="img" aria-label="C型・P型・D型で、はたらく錐体の違いを並べた図">
-        <text x={4} y={16} fontSize="10.5" fill="#777">実線＝はたらいている錐体　／　点線＝ない・はたらきにくい錐体</text>
         {rowsDef.map((r, i) => {
           const top = headH + i * rowH;
-          const cTop = top + 8;
+          const cTop = top + 58;
           const X = (l: number) => cx + ((l - 400) / 300) * cw;
           const Y = (v: number) => cTop + (1 - v) * chH;
           return (
             <g key={r.name}>
               {i > 0 && <line x1={4} y1={top - 6} x2={W - 4} y2={top - 6} stroke="#e2dfd7" />}
-              <text x={6} y={top + 22} fontSize="14" fontWeight="700" fill="#333">{r.name}</text>
-              <text x={6} y={top + 38} fontSize="10.5" fill="#777">{r.sub}</text>
-              <text x={6} y={top + 56} fontSize="10" fill="#666">{r.note[0]}</text>
-              <text x={6} y={top + 68} fontSize="10" fill="#666">{r.note[1]}</text>
+              <text x={6} y={top + 25} fontSize="18" fontWeight="700" fill="#333">{r.name}</text>
+              <text x={6} y={top + 46} fontSize="16" fill="#777">{r.sub}</text>
               <line x1={cx} y1={Y(0)} x2={cx + cw} y2={Y(0)} stroke="#cfc9bf" />
               {(['S', 'M', 'L'] as ConeKey[]).map((k) => (
                 <path
@@ -469,9 +467,9 @@ function TypeCones() {
                 <text
                   key={`t-${k}`}
                   x={X(CONE[k].peak)}
-                  y={Y(1) - 4}
+                  y={Y(1) - 10}
                   textAnchor="middle"
-                  fontSize="11"
+                  fontSize="16"
                   fontWeight="700"
                   fill={r.missing === k ? '#b8b2a7' : CONE[k].color}
                 >
@@ -479,7 +477,7 @@ function TypeCones() {
                 </text>
               ))}
               {i === rowsDef.length - 1 && (
-                <text x={cx + cw} y={Y(0) + 13} textAnchor="end" fontSize="9.5" fill="#999">波長 400→700nm（3段とも同じ縮尺）</text>
+                <text x={cx + cw} y={Y(0) + 26} textAnchor="end" fontSize="16" fill="#999">波長 400→700nm（3段とも同じ縮尺）</text>
               )}
             </g>
           );
@@ -491,15 +489,15 @@ function TypeCones() {
 
 // 高齢期に多い3つの目の病気で、見えにくくなる場所がどう違うかを並べる。
 function VisionConditions() {
-  const W = 470, pw = 224, phh = 122, labH = 18;
+  const W = 470, pw = 224, phh = 122, labH = 24;
   const cols = [6, W - 6 - pw];
   const rows = [labH, labH * 2 + phh + 14];
   const H = rows[1] + phh + 10;
   const panels = [
-    { title: '通常の見え方（比べるための基準）', kind: 'normal' },
-    { title: '白内障：全体がかすむ・まぶしい', kind: 'cataract' },
-    { title: '緑内障：まわりの視野が欠ける', kind: 'glaucoma' },
-    { title: '加齢黄斑変性：中心が見えにくい', kind: 'amd' },
+    { title: '通常の見え方（基準）', kind: 'normal' },
+    { title: '白内障', kind: 'cataract' },
+    { title: '緑内障', kind: 'glaucoma' },
+    { title: '加齢黄斑変性', kind: 'amd' },
   ];
   const glyphs = [
     ['あ', 'い', 'う', 'え', 'お'],
@@ -525,7 +523,7 @@ function VisionConditions() {
           const x = cols[i % 2], y = rows[Math.floor(i / 2)];
           return (
             <g key={p.kind}>
-              <text x={x} y={y - 5} fontSize="11" fontWeight="700" fill="#444">{p.title}</text>
+              <text x={x} y={y - 6} fontSize="16" fontWeight="700" fill="#444">{p.title}</text>
               <rect x={x} y={y} width={pw} height={phh} rx={5} fill="#fbf9f5" stroke="#cfc9bf" />
               <g filter={p.kind === 'cataract' ? 'url(#ucHaze)' : undefined}>
                 {glyphs.map((row, ri) =>
@@ -574,7 +572,7 @@ const NAME_ROWS: { base: string; hue: number; variants: { label: string; s: numb
 function NameModifiers() {
   const W = 460, rowH = 128, top = 26;
   const H = top + rowH * NAME_ROWS.length + 4;
-  const swW = 92, gap = 16, startX = 20, swH = 56;
+  const swW = 104, gap = 16, startX = 20, swH = 56;
   return (
     <Figure
       label="基本色名に「明るい」「うすい」「こい」などの修飾語を付けると、明度・彩度がどちらへ動くかを示した模式です。実際の系統色名は基準となる修飾語の使い方が細かく定められていますが、ここでは効きめの方向（明るい＝明度が上がる、こい＝明度が下がり彩度が保たれる、うすい＝彩度が下がる）を示しています。JIS慣用色名などの正確な規定値を再現したものではありません。"
@@ -591,13 +589,13 @@ function NameModifiers() {
           const swY = y + 20;
           return (
             <g key={row.base}>
-              <text x={startX} y={y} fontSize="12" fontWeight="700" fill="#555">基本色名「{row.base}」</text>
+              <text x={startX} y={y} fontSize="16" fontWeight="700" fill="#555">基本色名「{row.base}」</text>
               {row.variants.map((v, vi) => {
                 const x = startX + vi * (swW + gap);
                 return (
                   <g key={v.label}>
                     <rect x={x} y={swY} width={swW} height={swH} rx={6} fill={hsl(row.hue, v.s, v.l)} stroke="#00000022" />
-                    <text x={x + swW / 2} y={swY + swH + 18} textAnchor="middle" fontSize="11.5" fill="#333">{v.label}</text>
+                    <text x={x + swW / 2} y={swY + swH + 22} textAnchor="middle" fontSize="16" fill="#333">{v.label}</text>
                   </g>
                 );
               })}
@@ -628,7 +626,7 @@ function XLinked() {
   const chromo = (x: number, y: number, variant: boolean, label: string) => (
     <g key={label}>
       <rect x={x} y={y} width={14} height={54} rx={7} fill={variant ? '#c96a5a' : '#e7e2d8'} stroke="#8c8577" strokeWidth="1" />
-      <text x={x + 7} y={y + 68} textAnchor="middle" fontSize="10" fill="#555">{label}</text>
+      <text x={x + 7} y={y + 70} textAnchor="middle" fontSize="16" fill="#555">{label}</text>
     </g>
   );
   return (
@@ -637,26 +635,26 @@ function XLinked() {
       max={460}
     >
       <svg viewBox={`0 0 ${W} ${H}`} width="100%" role="img" aria-label="X連鎖劣性遺伝で男性に多く現れる理由を示す模式図。女性はX染色体2本で補われるが、男性はX染色体1本のため該当型がそのまま現れる">
-        <text x={20} y={20} fontSize="12.5" fontWeight="700" fill="#444">女性（XX）：2本のうち1本が該当型 → 現れにくい（保因者）</text>
+        <text x={20} y={20} fontSize="15" fontWeight="700" fill="#444">女性（XX）：2本のうち1本が該当型 → 現れにくい</text>
         <g transform="translate(20,32)">
           {chromo(0, 0, false, 'X')}
           {chromo(30, 0, true, 'X')}
         </g>
         <rect x={140} y={32} width="180" height="60" rx={8} fill="#f2efe9" stroke="#cfc9bf" />
-        <text x={230} y={58} textAnchor="middle" fontSize="11" fill="#555">もう1本のXが</text>
-        <text x={230} y={74} textAnchor="middle" fontSize="11" fill="#555">はたらきを補う</text>
+        <text x={230} y={58} textAnchor="middle" fontSize="16" fill="#555">もう1本のXが</text>
+        <text x={230} y={78} textAnchor="middle" fontSize="16" fill="#555">はたらきを補う</text>
 
-        <text x={20} y={140} fontSize="12.5" fontWeight="700" fill="#444">男性（XY）：X染色体は1本だけ → そのまま現れる</text>
+        <text x={20} y={140} fontSize="15" fontWeight="700" fill="#444">男性（XY）：X染色体は1本だけ → そのまま現れる</text>
         <g transform="translate(20,152)">
           {chromo(0, 0, true, 'X')}
           <g>
             <rect x={30} y={0} width="14" height="54" rx={7} fill="#e7e2d8" stroke="#8c8577" strokeWidth="1" strokeDasharray="3 3" />
-            <text x={37} y={68} textAnchor="middle" fontSize="10" fill="#555">Y</text>
+            <text x={37} y={70} textAnchor="middle" fontSize="16" fill="#555">Y</text>
           </g>
         </g>
         <rect x={140} y={152} width="180" height="60" rx={8} fill="#fbeee9" stroke="#c96a5a" />
-        <text x={230} y={178} textAnchor="middle" fontSize="11" fill="#9a3a2f">補う相手がなく</text>
-        <text x={230} y={194} textAnchor="middle" fontSize="11" fill="#9a3a2f">特徴が現れる</text>
+        <text x={230} y={178} textAnchor="middle" fontSize="16" fill="#9a3a2f">補う相手がなく</text>
+        <text x={230} y={198} textAnchor="middle" fontSize="16" fill="#9a3a2f">特徴が現れる</text>
       </svg>
     </Figure>
   );
@@ -683,10 +681,10 @@ function LensTransmittance() {
         <rect x={padL} y={padT} width={pw} height={ph} fill="#fff" stroke="#e2dfd7" />
         <path d={path(young)} fill="none" stroke="#2f5fa8" strokeWidth="2.4" />
         <path d={path(aged)} fill="none" stroke="#d9822b" strokeWidth="2.4" />
-        <text x={X(0.06)} y={Y(0.92) - 6} fontSize="11" fontWeight="700" fill="#2f5fa8">若い水晶体</text>
-        <text x={X(0.32)} y={Y(0.5) - 6} fontSize="11" fontWeight="700" fill="#d9822b">黄変化した水晶体</text>
-        <text x={14} y={padT + ph / 2} textAnchor="middle" fontSize="11" fill="#555" transform={`rotate(-90 14 ${padT + ph / 2})`}>透過率</text>
-        <text x={padL + pw / 2} y={H - 8} textAnchor="middle" fontSize="11" fill="#555">波長（左＝短い／青紫・右＝長い／赤）</text>
+        <text x={X(0.06)} y={Y(0.92) - 8} fontSize="14" fontWeight="700" fill="#2f5fa8">若い水晶体</text>
+        <text x={X(0.32)} y={Y(0.5) - 8} fontSize="14" fontWeight="700" fill="#d9822b">黄変化した水晶体</text>
+        <text x={14} y={padT + ph / 2} textAnchor="middle" fontSize="14" fill="#555" transform={`rotate(-90 14 ${padT + ph / 2})`}>透過率</text>
+        <text x={padL + pw / 2} y={H - 8} textAnchor="middle" fontSize="14" fill="#555">波長（左＝短い／青紫・右＝長い／赤）</text>
       </svg>
     </Figure>
   );
@@ -694,7 +692,7 @@ function LensTransmittance() {
 
 // ── CUDの進め方：設計→確認→修正のサイクル ──────────────────────
 function CudCycle() {
-  const W = 400, H = 300, cx = W / 2, cy = 150, r = 92;
+  const W = 400, H = 320, cx = W / 2, cy = 160, r = 92;
   const steps: { label: string; sub: [string, string]; angle: number }[] = [
     { label: '設計', sub: ['明度差・模様・', '色名併記'], angle: -90 },
     { label: '確認', sub: ['シミュレーション', '・当事者検証'], angle: 30 },
@@ -736,14 +734,14 @@ function CudCycle() {
           const [x, y] = pt(s.angle, r);
           return (
             <g key={s.label}>
-              <circle cx={x} cy={y} r={40} fill="#fff" stroke="#2f6d5b" strokeWidth="2" />
-              <text x={x} y={y - 2} textAnchor="middle" fontSize="15" fontWeight="700" fill="#2f6d5b">{s.label}</text>
-              <text x={x} y={y + 16} textAnchor="middle" fontSize="9" fill="#666">{s.sub[0]}</text>
-              <text x={x} y={y + 27} textAnchor="middle" fontSize="9" fill="#666">{s.sub[1]}</text>
+              <circle cx={x} cy={y} r={60} fill="#fff" stroke="#2f6d5b" strokeWidth="2" />
+              <text x={x} y={y - 14} textAnchor="middle" fontSize="17" fontWeight="700" fill="#2f6d5b">{s.label}</text>
+              <text x={x} y={y + 8} textAnchor="middle" fontSize="14" fill="#666">{s.sub[0]}</text>
+              <text x={x} y={y + 26} textAnchor="middle" fontSize="14" fill="#666">{s.sub[1]}</text>
             </g>
           );
         })}
-        <text x={cx} y={cy} textAnchor="middle" fontSize="11" fill="#999">くり返す</text>
+        <text x={cx} y={cy} textAnchor="middle" fontSize="14" fill="#999">くり返す</text>
       </svg>
     </Figure>
   );
@@ -754,10 +752,10 @@ function CudCycle() {
 // 幾何プリミティブ（線・円・信号灯の輪郭）で成立する「関係を示す図」として設計。
 function ColorRoles() {
   const W = 460, panelW = 138, gap = 12, panelH = 150, top = 8;
-  const H = top + panelH + 44;
+  const H = top + panelH + 64;
   const panels = [
-    { key: 'identify', title: '識別', sub: '見分ける・区別する' },
-    { key: 'attract', title: '誘目', sub: '目を引きつける' },
+    { key: 'identify', title: '識別', sub: '見分ける' },
+    { key: 'attract', title: '誘目', sub: '目を引く' },
     { key: 'cognize', title: '認知', sub: '意味を伝える' },
   ];
   return (
@@ -798,8 +796,8 @@ function ColorRoles() {
                   <circle cx={x + panelW / 2} cy={top + 98} r={11} fill="#3a3630" opacity="0.5" />
                 </g>
               )}
-              <text x={x + panelW / 2} y={top + panelH + 20} textAnchor="middle" fontSize="14" fontWeight="700" fill="#333">{p.title}</text>
-              <text x={x + panelW / 2} y={top + panelH + 36} textAnchor="middle" fontSize="10.5" fill="#666">{p.sub}</text>
+              <text x={x + panelW / 2} y={top + panelH + 22} textAnchor="middle" fontSize="16" fontWeight="700" fill="#333">{p.title}</text>
+              <text x={x + panelW / 2} y={top + panelH + 42} textAnchor="middle" fontSize="16" fill="#666">{p.sub}</text>
             </g>
           );
         })}
@@ -813,7 +811,7 @@ function ColorRoles() {
 // 色を一切使わないことで「模様だけで見分けられる」という主張を裏づける。
 function HatchingPatterns() {
   const W = 460, swW = 100, gap = 12, top = 8, swH = 90;
-  const H = top + swH + 34;
+  const H = top + swH + 48;
   const items = [
     { key: 'solid', label: '無地', fill: '#8a8a8a' },
     { key: 'diag', label: '斜線', fill: 'url(#ucHatchDiag)' },
@@ -846,7 +844,7 @@ function HatchingPatterns() {
           return (
             <g key={it.key}>
               <rect x={x} y={top} width={swW} height={swH} rx={6} fill={it.fill} stroke="#00000022" />
-              <text x={x + swW / 2} y={top + swH + 20} textAnchor="middle" fontSize="13" fontWeight="700" fill="#333">{it.label}</text>
+              <text x={x + swW / 2} y={top + swH + 24} textAnchor="middle" fontSize="16" fontWeight="700" fill="#333">{it.label}</text>
             </g>
           );
         })}
