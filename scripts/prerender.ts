@@ -4,6 +4,7 @@
 // 実行: npx tsx --tsconfig tsconfig.app.json scripts/prerender.ts（npm run predeploy 内）
 import * as fs from 'fs';
 import * as path from 'path';
+import { execSync } from 'child_process';
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { modules } from '../src/data/modules';
@@ -267,21 +268,42 @@ writePage('privacy', `プライバシーポリシー | ${SITE_NAME}`, '色彩検
   { '@context': 'https://schema.org', '@type': 'WebPage', name: 'プライバシーポリシー', url: `${BASE_URL}/privacy/`, inLanguage: 'ja' });
 
 // ── sitemap.xml ──
-// ⚠️ ビルド時の日付を使う（2026-08-28 修正）。以前はここが公開日の固定文字列で、
-// サイトを毎日更新しても sitemap の lastmod が 2026-06-22 のまま3か月動かず、
-// Google に「更新されていないサイト」と申告し続けていた。_pipeline/incidents.md 2026-08-28
+// lastmod はページごとの最終更新日（2026-11-07 監督）。全 URL をビルドした日にすると、どのページが変わったかが Google に伝わらない。
+// データの1件ごとのページは、データファイルのその id の行を git blame して いちばん新しいコミットの日。git が使えなければ今日に戻す
 const today = new Date().toISOString().split('T')[0];
+const lastCommitDay = (files: string[]): string => {
+  try { return execSync(`git log -1 --format=%cs -- ${files.join(' ')}`, { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim() || today; } catch { return today; }
+};
+const blameIdDays = (file: string, ids: string[]): Map<string, string> => {
+  const out = new Map<string, string>();
+  try {
+    const src = fs.readFileSync(path.resolve(process.cwd(), file), 'utf8').split('\n');
+    const lines = execSync(`git blame --line-porcelain ${file}`, { maxBuffer: 1 << 28, stdio: ['ignore', 'pipe', 'ignore'] }).toString().split('\n');
+    const times: number[] = []; let cur = 0;
+    for (const l of lines) { if (l.startsWith('committer-time ')) cur = Number(l.slice(15)); else if (l.startsWith('\t')) times.push(cur); }
+    const starts = ids.map((id) => src.findIndex((l) => l.startsWith(`    id: '${id}',`)));
+    ids.forEach((id, k) => {
+      const a = starts[k]; if (a < 0) return;
+      const b = starts.filter((x) => x > a).sort((x, y) => x - y)[0] ?? src.length;
+      const t = Math.max(...times.slice(a, b));
+      if (t > 0) out.set(id, new Date(t * 1000).toISOString().split('T')[0]);
+    });
+  } catch { /* git が無ければ今日 */ }
+  return out;
+};
+const modDay = blameIdDays('src/data/modules.ts', modules.map((m) => m.id));
+const newest = [...modDay.values()].sort().pop() ?? today;
 const urls = [
-  { loc: `${BASE_URL}/`, priority: '1.0', changefreq: 'weekly' },
-  ...modules.map((m) => ({ loc: `${BASE_URL}/${m.id}/`, priority: '0.8', changefreq: 'monthly' })),
-  { loc: `${BASE_URL}/glossary/`, priority: '0.7', changefreq: 'monthly' },
-  { loc: `${BASE_URL}/guide/`, priority: '0.7', changefreq: 'monthly' },
-  { loc: `${BASE_URL}/about/`, priority: '0.4', changefreq: 'yearly' },
-  { loc: `${BASE_URL}/privacy/`, priority: '0.3', changefreq: 'yearly' },
+  { loc: `${BASE_URL}/`, priority: '1.0', changefreq: 'weekly', lastmod: newest },
+  ...modules.map((m) => ({ loc: `${BASE_URL}/${m.id}/`, priority: '0.8', changefreq: 'monthly', lastmod: modDay.get(m.id) ?? today })),
+  { loc: `${BASE_URL}/glossary/`, priority: '0.7', changefreq: 'monthly', lastmod: lastCommitDay(['src/data/glossary.ts']) },
+  { loc: `${BASE_URL}/guide/`, priority: '0.7', changefreq: 'monthly', lastmod: lastCommitDay(['scripts/prerender.ts', 'src/data/examConfig.ts']) },
+  { loc: `${BASE_URL}/about/`, priority: '0.4', changefreq: 'yearly', lastmod: lastCommitDay(['scripts/prerender.ts']) },
+  { loc: `${BASE_URL}/privacy/`, priority: '0.3', changefreq: 'yearly', lastmod: lastCommitDay(['scripts/prerender.ts']) },
 ];
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls.map((u) => `  <url><loc>${u.loc}</loc><lastmod>${today}</lastmod><changefreq>${u.changefreq}</changefreq><priority>${u.priority}</priority></url>`).join('\n')}
+${urls.map((u) => `  <url><loc>${u.loc}</loc><lastmod>${u.lastmod}</lastmod><changefreq>${u.changefreq}</changefreq><priority>${u.priority}</priority></url>`).join('\n')}
 </urlset>`;
 fs.writeFileSync(path.join(DIST_DIR, 'sitemap.xml'), sitemap);
 
