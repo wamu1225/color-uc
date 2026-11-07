@@ -249,8 +249,8 @@ function Home({ chapters, progress, navigate }: { chapters: { n: number; name: s
         <h1>色のユニバーサルデザインを、基礎からやさしく</h1>
         <p className="hero-lead">色の見え方は人それぞれ。色覚タイプや加齢による違いを理解し、だれにでも伝わる配色を学ぶ、色彩検定UC級の学習ノートです。図と確認問題でひとつずつ理解していきます。</p>
         <div className="hero-actions">
-          <button className="btn btn-primary" onClick={() => navigate({ view: 'module', id: modules[0].id })}>最初のモジュールから始める</button>
-          <button className="btn" onClick={() => navigate({ view: 'guide' })}>試験ガイドを見る</button>
+          <a className="btn btn-primary" href={hrefFor({ view: 'module', id: modules[0].id })} onClick={(e) => { e.preventDefault(); navigate({ view: 'module', id: modules[0].id }); }}>最初のモジュールから始める</a>
+          <a className="btn" href={hrefFor({ view: 'guide' })} onClick={(e) => { e.preventDefault(); navigate({ view: 'guide' }); }}>試験ガイドを見る</a>
         </div>
         <div className="hero-hatch" aria-hidden="true"><span /><span /><span /><span /></div>
       </section>
@@ -301,8 +301,8 @@ function ModulePage({ id, navigate, onQuizComplete }: { id: string; navigate: (r
       )}
       <section className="quiz-section"><h2>理解度チェック</h2><Quiz questions={mod.quiz} onComplete={(s, t) => onQuizComplete(mod.id, s, t)} /></section>
       <nav className="module-nav">
-        {prev ? <button className="btn" onClick={() => navigate({ view: 'module', id: prev.id })}>← {prev.title}</button> : <span />}
-        {next ? <button className="btn btn-primary" onClick={() => navigate({ view: 'module', id: next.id })}>{next.title} →</button> : <button className="btn" onClick={() => navigate({ view: 'home' })}>ホームへ戻る</button>}
+        {prev ? <a className="btn" href={hrefFor({ view: 'module', id: prev.id })} onClick={(e) => { e.preventDefault(); navigate({ view: 'module', id: prev.id }); }}>← {prev.title}</a> : <span />}
+        {next ? <a className="btn btn-primary" href={hrefFor({ view: 'module', id: next.id })} onClick={(e) => { e.preventDefault(); navigate({ view: 'module', id: next.id }); }}>{next.title} →</a> : <a className="btn" href={hrefFor({ view: 'home' })} onClick={(e) => { e.preventDefault(); navigate({ view: 'home' }); }}>ホームへ戻る</a>}
       </nav>
     </article>
   );
@@ -341,7 +341,7 @@ function GlossaryPage({ navigate }: { navigate: (r: Route) => void }) {
           </dl>
         </section>
       ))}
-      <p className="back"><button className="btn" onClick={() => navigate({ view: 'home' })}>← ホームへ戻る</button></p>
+      <p className="back"><a className="btn" href={hrefFor({ view: 'home' })} onClick={(e) => { e.preventDefault(); navigate({ view: 'home' }); }}>← ホームへ戻る</a></p>
     </div>
   );
 }
@@ -372,7 +372,7 @@ function GuidePage({ navigate }: { navigate: (r: Route) => void }) {
       <h2>学習の進め方</h2>
       <p>UC級は「色のユニバーサルデザイン」が主題です。色の見えるしくみや色覚タイプ、加齢による見え方を理解し、明度差・色名併記・模様などで「だれにでも伝わる配色」を学びます。色の三属性やPCCSなどの共通基礎は、<a href="https://study-apps.com/color-g3/" target="_blank" rel="noopener noreferrer">色彩検定3級の学習ノート</a>でも扱っています。</p>
       <p className="notice">※本サイトは個人が運営する学習支援サイトであり、{EXAM_CONFIG.organizer}の公式サイトではありません。最新かつ正確な試験情報は公式サイトでご確認ください。</p>
-      <p className="back"><button className="btn" onClick={() => navigate({ view: 'home' })}>← ホームへ戻る</button></p>
+      <p className="back"><a className="btn" href={hrefFor({ view: 'home' })} onClick={(e) => { e.preventDefault(); navigate({ view: 'home' }); }}>← ホームへ戻る</a></p>
     </div>
   );
 }

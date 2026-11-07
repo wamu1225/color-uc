@@ -72,3 +72,6 @@ img, svg { max-width: 100%; }
 .btn:hover { background: var(--paper-2); text-decoration: none; }
 .btn-primary { color: #fff; background: var(--accent); border-color: var(--accent); }
 .btn-primary:hover { background: var(--accent-deep); border-color: var(--accent-deep); }
+
+/* 画面遷移は <a href>（2026-11-07）。button と同じ見た目にする */
+a.btn { text-decoration: none; display: inline-flex; align-items: center; justify-content: center; text-align: center; }
